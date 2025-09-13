@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MalariaScope Pro - Advanced Malaria Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --accent: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 15px 0;
+            border-radius: 0 0 var(--radius) var(--radius);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.8rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 50%;
+        }
+        
+        .logo h1 {
+            font-weight: 700;
+            font-size: 2.2rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .logo span {
+            font-weight: 300;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        nav a:hover, nav a.active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .notification-btn {
+            position: relative;
+            background: rgba(255, 255, 255, 0.15);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        .user-profile:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            padding-bottom: 18px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .card-action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .card-action-btn:hover {
+            background: var(--light-gray);
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed var(--primary);
+            border-radius: var(--radius);
+            padding: 45px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            background-color: rgba(37, 99, 235, 0.03);
+        }
+        
+        .upload-area.active {
+            border-color: var(--success);
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+        
+        .upload-icon {
+            font-size: 4.5rem;
+            color: var(--primary);
+            margin-bottom: 18px;
+        }
+        
+        .upload-info {
+            margin-bottom: 20px;
+        }
+        
+        .upload-info h3 {
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .upload-info p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        .file-details {
+            display: none;
+            background: var(--light);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .file-details.active {
+            display: block;
+        }
+        
+        .file-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .file-detail-label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .file-detail-value {
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        /* Buttons */
+        .btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            opacity: 0.92;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(37, 99, 235, 0.25);
+        }
+        
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 7px 20px rgba(16, 185, 129, 0.25);
+        }
+        
+        /* Results Area */
+        .result-area {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .result-icon {
+            font-size: 5.5rem;
+            margin-bottom: 25px;
+        }
+        
+        .negative {
+            color: var(--success);
+        }
+        
+        .positive {
+            color: var(--accent);
+        }
+        
+        .result-text {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .result-desc {
+            color: var(--gray);
+            max-width: 400px;
+            margin: 0 auto 25px;
+            line-height: 1.7;
+        }
+        
+        .confidence-meter {
+            width: 100%;
+            height: 20px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            margin: 25px 0;
+            overflow: hidden;
+        }
+        
+        .confidence-level {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .confidence-negative {
+            background: var(--success);
+        }
+        
+        .confidence-positive {
+            background: var(--accent);
+        }
+        
+        .confidence-label {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Stats Grid */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 22px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+        }
+        
+        .stat-icon-positive {
+            color: var(--accent);
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .stat-icon-negative {
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .stat-icon-accuracy {
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .stat-title {
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        /* Image Preview */
+        .image-preview-container {
+            position: relative;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .image-preview {
+            width: 100%;
+            max-height: 320px;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .preview-actions {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .preview-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .preview-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Recent Tests */
+        .recent-tests {
+            margin-top: 50px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+        
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .test-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .test-item {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .test-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .test-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 18px;
+            flex-shrink: 0;
+        }
+        
+        .status-positive {
+            background-color: var(--accent);
+        }
+        
+        .status-negative {
+            background-color: var(--success);
+        }
+        
+        .test-info {
+            flex: 1;
+        }
+        
+        .test-result {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .test-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .test-confidence {
+            font-weight: 600;
+            color: var(--dark);
+            margin-left: 15px;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 70px;
+            color: var(--gray);
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .footer-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 20px 0;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .test-list {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .header-content {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            nav ul {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .test-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-profile .user-name {
+                display: none;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .card-actions {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-microscope"></i>
+                    <div>
+                        <h1>MalariaScope <span>Pro</span></h1>
+                    </div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                        <li><a href="#"><i class="fas fa-history"></i> History</a></li>
+                        <li><a href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <div class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="user-name">Dr. Sarah Johnson</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-upload"></i>
+                        Upload Blood Cell Image
+                    </h2>
+                    <div class="card-actions">
+                        <div class="card-action-btn">
+                            <i class="fas fa-question"></i>
+                        </div>
+                        <div class="card-action-btn">
+                            <i class="fas fa-sync"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="upload-area" id="dropZone">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <div class="upload-info">
+                        <h3>Drag & Drop Blood Cell Image</h3>
+                        <p>Supported formats: JPG, PNG, TIFF | Max size: 10MB</p>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-folder-open"></i> Select Image
+                    </button>
+                    
+                    <div class="file-details" id="fileDetails">
+                        <div class="file-detail-row">
+                            <span class="file-detail-label">Filename:</span>
+                            <span class="file-detail-value" id="fileName">blood_sample_001.jpg</span>
+                        </div>
+                        <div class="file-detail-row">
+                            <span class="file-detail-label">Size:</span>
+                            <span class="file-detail-value" id="fileSize">4.2 MB</span>
+                        </div>
+                        <div class="file-detail-row">
+                            <span class="file-detail-label">Type:</span>
+                            <span class="file-detail-value" id="fileType">JPEG Image</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-preview-container" id="imagePreviewContainer">
+                    <img id="imagePreview" class="image-preview" alt="Image preview">
+                    <div class="preview-actions">
+                        <div class="preview-btn" id="rotateBtn">
+                            <i class="fas fa-redo"></i>
+                        </div>
+                        <div class="preview-btn" id="removeBtn">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-top: 20px;">
+                    <button class="btn btn-large" style="flex: 1;" onclick="analyzeImage()">
+                        <i class="fas fa-search"></i> Analyze Image
+                    </button>
+                    <button class="btn btn-outline" style="flex: 1;">
+                        <i class="fas fa-download"></i> Save Report
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-file-medical-alt"></i>
+                        Detection Results
+                    </h2>
+                    <div class="card-actions">
+                        <div class="card-action-btn">
+                            <i class="fas fa-print"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-area">
+                    <i class="fas fa-question-circle result-icon" id="resultIcon"></i>
+                    <h3 class="result-text" id="resultText">Waiting for Analysis</h3>
+                    <p class="result-desc" id="resultDesc">Upload a blood cell image and click analyze to get detection results.</p>
+                    
+                    <div class="confidence-meter">
+                        <div class="confidence-level" id="confidenceLevel" style="width: 0%"></div>
+                    </div>
+                    <div class="confidence-label">
+                        <span>0%</span>
+                        <span>Confidence Level</span>
+                        <span>100%</span>
+                    </div>
+                    
+                    <div style="margin: 30px 0;">
+                        <canvas id="resultsChart" height="150"></canvas>
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-positive">
+                                <i class="fas fa-bacteria"></i>
+                            </div>
+                            <div class="stat-number" id="positiveCount">12</div>
+                            <div class="stat-title">Positive Cases</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-negative">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-number" id="negativeCount">28</div>
+                            <div class="stat-title">Negative Cases</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-accuracy">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-number" id="accuracy">97.3%</div>
+                            <div class="stat-title">Model Accuracy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recent-tests">
+            <div class="section-header">
+                <h2 class="section-title">Recent Tests</h2>
+                <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="test-list">
+                <div class="test-item">
+                    <div class="test-status status-negative"></div>
+                    <div class="test-info">
+                        <div class="test-result">Negative for Malaria</div>
+                        <div class="test-date">September 12, 2023 - 10:30 AM</div>
+                    </div>
+                    <div class="test-confidence">98.2%</div>
+                </div>
+                <div class="test-item">
+                    <div class="test-status status-positive"></div>
+                    <div class="test-info">
+                        <div class="test-result">Positive for Malaria</div>
+                        <div class="test-date">September 10, 2023 - 2:15 PM</div>
+                    </div>
+                    <div class="test-confidence">96.7%</div>
+                </div>
+                <div class="test-item">
+                    <div class="test-status status-negative"></div>
+                    <div class="test-info">
+                        <div class="test-result">Negative for Malaria</div>
+                        <div class="test-date">September 5, 2023 - 9:45 AM</div>
+                    </div>
+                    <div class="test-confidence">97.5%</div>
+                </div>
+                <div class="test-item">
+                    <div class="test-status status-positive"></div>
+                    <div class="test-info">
+                        <div class="test-result">Positive for Malaria</div>
+                        <div class="test-date">September 3, 2023 - 4:20 PM</div>
+                    </div>
+                    <div class="test-confidence">95.8%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>MalariaScope Pro - Advanced AI-Powered Malaria Detection System</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Support</a>
+                </div>
+                <p>This tool is intended to assist healthcare professionals and should not be used as a sole diagnostic method.</p>
+                <p>© 2023 MalariaScope Pro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize results chart
+        const ctx = document.getElementById('resultsChart').getContext('2d');
+        const resultsChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Positive', 'Negative'],
+                datasets: [{
+                    data: [0, 0],
+                    backgroundColor: [
+                        '#ef4444',
+                        '#10b981'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: "'Open Sans', sans-serif",
+                                size: 13
+                            },
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleFont: {
+                            family: "'Montserrat', sans-serif",
+                            size: 14
+                        },
+                        bodyFont: {
+                            family: "'Open Sans', sans-serif",
+                            size: 13
+                        },
+                        padding: 12,
+                        boxPadding: 6
+                    }
+                }
+            }
+        });
+        
+        // File upload functionality
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const fileDetails = document.getElementById('fileDetails');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const fileType = document.getElementById('fileType');
+        const confidenceLevel = document.getElementById('confidenceLevel');
+        const removeBtn = document.getElementById('removeBtn');
+        const rotateBtn = document.getElementById('rotateBtn');
+        
+        let rotation = 0;
+        
+        // Handle drag and drop events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropZone.classList.add('active');
+        }
+        
+        function unhighlight() {
+            dropZone.classList.remove('active');
+        }
+        
+        // Handle file drop
+        dropZone.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+        
+        // Handle file selection via button
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+        
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreviewContainer.style.display = 'block';
+                        fileDetails.classList.add('active');
+                        
+                        // Set file details
+                        fileName.textContent = file.name;
+                        fileSize.textContent = formatFileSize(file.size);
+                        fileType.textContent = getFileType(file.type);
+                    }
+                    
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+        
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Get file type
+        function getFileType(type) {
+            switch(type) {
+                case 'image/jpeg': return 'JPEG Image';
+                case 'image/png': return 'PNG Image';
+                case 'image/tiff': return 'TIFF Image';
+                default: return type;
+            }
+        }
+        
+        // Remove image
+        removeBtn.addEventListener('click', function() {
+            imagePreviewContainer.style.display = 'none';
+            fileDetails.classList.remove('active');
+            fileInput.value = '';
+            resetResults();
+        });
+        
+        // Rotate image
+        rotateBtn.addEventListener('click', function() {
+            rotation = (rotation + 90) % 360;
+            imagePreview.style.transform = `rotate(${rotation}deg)`;
+        });
+        
+        // Reset results
+        function resetResults() {
+            const resultIcon = document.getElementById('resultIcon');
+            const resultText = document.getElementById('resultText');
+            const resultDesc = document.getElementById('resultDesc');
+            
+            resultIcon.className = 'fas fa-question-circle result-icon';
+            resultText.textContent = 'Waiting for Analysis';
+            resultDesc.textContent = 'Upload a blood cell image and click analyze to get detection results.';
+            confidenceLevel.style.width = '0%';
+            confidenceLevel.className = 'confidence-level';
+            
+            resultsChart.data.datasets[0].data = [0, 0];
+            resultsChart.update();
+        }
+        
+        // Simulate analysis (in a real app, this would call your model API)
+        function analyzeImage() {
+            if (!imagePreview.src || imagePreview.src === window.location.href) {
+                alert('Please upload an image first.');
+                return;
+            }
+            
+            // Show loading state
+            const resultIcon = document.getElementById('resultIcon');
+            const resultText = document.getElementById('resultText');
+            const resultDesc = document.getElementById('resultDesc');
+            
+            resultIcon.className = 'fas fa-spinner fa-spin result-icon';
+            resultText.textContent = 'Analyzing...';
+            resultDesc.textContent = 'Processing blood cell image. Please wait.';
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // Random result for demonstration (in real app, use your model's output)
+                const isPositive = Math.random() > 0.5;
+                const confidence = Math.floor(Math.random() * 15) + 85; // 85-99%
+                
+                if (isPositive) {
+                    resultIcon.className = 'fas fa-exclamation-triangle result-icon positive';
+                    resultText.textContent = 'Malaria Detected!';
+                    resultDesc.textContent = `The AI model has detected signs of malaria parasites in the blood sample with ${confidence}% confidence. Please consult a healthcare professional for confirmation and treatment.`;
+                    confidenceLevel.className = 'confidence-level confidence-positive';
+                    confidenceLevel.style.width = `${confidence}%`;
+                    
+                    // Update chart
+                    resultsChart.data.datasets[0].data = [confidence, 100-confidence];
+                    resultsChart.update();
+                    
+                    // Update stats
+                    document.getElementById('positiveCount').textContent = 
+                        parseInt(document.getElementById('positiveCount').textContent) + 1;
+                } else {
+                    resultIcon.className = 'fas fa-check-circle result-icon negative';
+                    resultText.textContent = 'No Malaria Detected';
+                    resultDesc.textContent = `The blood sample appears to be free of malaria parasites with ${confidence}% confidence. Regular screening is recommended for individuals in high-risk areas.`;
+                    confidenceLevel.className = 'confidence-level confidence-negative';
+                    confidenceLevel.style.width = `${confidence}%`;
+                    
+                    // Update chart
+                    resultsChart.data.datasets[0].data = [100-confidence, confidence];
+                    resultsChart.update();
+                    
+                    // Update stats
+                    document.getElementById('negativeCount').textContent = 
+                        parseInt(document.getElementById('negativeCount').textContent) + 1;
+                }
+                
+                // Add to recent tests
+                const testList = document.querySelector('.test-list');
+                const newTest = document.createElement('div');
+                newTest.className = 'test-item';
+                newTest.innerHTML = `
+                    <div class="test-status ${isPositive ? 'status-positive' : 'status-negative'}"></div>
+                    <div class="test-info">
+                        <div class="test-result">${isPositive ? 'Positive for Malaria' : 'Negative for Malaria'}</div>
+                        <div class="test-date">${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                    </div>
+                    <div class="test-confidence">${confidence}%</div>
+                `;
+                testList.prepend(newTest);
+                
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
